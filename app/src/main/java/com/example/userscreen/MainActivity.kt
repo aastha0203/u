@@ -66,14 +66,15 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileScreen(){
-    val notification= rememberSaveable{mutableStateOf("")}
-    if (notification.value.isNotEmpty()){
-        Toast.makeText(LocalContext.current,notification.value, Toast.LENGTH_LONG).show()
-        notification.value=""
+fun ProfileScreen() {
+    val notification = rememberSaveable { mutableStateOf("") }
+    if (notification.value.isNotEmpty()) {
+        Toast.makeText(LocalContext.current, notification.value, Toast.LENGTH_LONG).show()
+        notification.value = ""
     }
     var name by rememberSaveable {
-        mutableStateOf("default name")}
+        mutableStateOf("default name")
+    }
     var about by rememberSaveable {
         mutableStateOf("default about")
     }
@@ -82,119 +83,148 @@ fun ProfileScreen(){
     }
 
 
-    Column(modifier= Modifier
-        .verticalScroll(rememberScrollState())
-        .padding(8.dp)) {
-    Row(modifier= Modifier
-        .fillMaxSize()
-        .padding(8.dp)
-        //.background(Color.White)
-        , horizontalArrangement = Arrangement.SpaceBetween){
-        Text(text = "Cancel",modifier=Modifier.clickable { notification.value="No changes Done" })
-        Text(text = "Save",modifier=Modifier.clickable { notification.value="Changes Saved" })
+    Column(
+        modifier = Modifier
+            .verticalScroll(rememberScrollState())
+            .padding(8.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp)
+            //.background(Color.White)
+            , horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = "Cancel",
+                modifier = Modifier.clickable { notification.value = "No changes Done" })
+            Text(
+                text = "Save",
+                modifier = Modifier.clickable { notification.value = "Changes Saved" })
 
-    }
-    ProfileImage()
+        }
+        ProfileImage()
         Spacer(modifier = Modifier.height(45.dp))
-        Row (
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 4.dp, end = 4.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
-        ){
-            Text(text = "Name",modifier=Modifier.width(100.dp))
-            TextField(value = name, onValueChange ={name=it},
-
-                colors=TextFieldDefaults.textFieldColors(
-                    textColor = Color.Black
-                ))
-
-
+        ) {
+            Text(
+                text = "Name",
+                modifier = Modifier.width(100.dp)
+            )
+            TextField(
+                value = name,
+                onValueChange = { name = it },
+                colors = TextFieldDefaults.textFieldColors(textColor = Color.Black)
+            )
         }
         Spacer(modifier = Modifier.height(40.dp))
         Row(
-            modifier= Modifier
+            modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp),
-            verticalAlignment = Alignment.Top,
+                .padding(4.dp),
+            verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
-        ){
+        ) {
             Text(
-                text="About",modifier= Modifier
+                text = "About",
+                modifier = Modifier
                     .width(100.dp)
                     .padding(top = 8.dp)
             )
-            TextField(value = about, onValueChange = {about=it
-            }, colors = TextFieldDefaults.textFieldColors(
-                textColor = Color.Black
-            ),
+            TextField(
+                value = about,
+                onValueChange = { about = it },
+                placeholder = { Text(text = "Describe yourself") },
+                colors = TextFieldDefaults.textFieldColors(textColor = Color.Black),
                 singleLine = false,
-                modifier = Modifier.height(50.dp))
+//                modifier = Modifier.height(50.dp)
+            )
         }
         Spacer(modifier = Modifier.height(40.dp))
-        Row (
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 4.dp, end = 4.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
-        ){
-            Text(text = "Username",modifier=Modifier.width(100.dp))
-            TextField(value = username, onValueChange ={username=it},
-                colors=TextFieldDefaults.textFieldColors(
-                    textColor = Color.Black
-                ))
+        ) {
+            Text(
+                text = "Username",
+                modifier = Modifier.width(100.dp)
+            )
+            TextField(
+                value = username,
+                onValueChange = { username = it },
+                colors = TextFieldDefaults.textFieldColors(textColor = Color.Black)
+            )
 
         }
 
-
-
-
-}
-
-}
-@Composable
-fun ProfileImage() {
-    val imageUri = rememberSaveable { mutableStateOf("") }
-    val painter= rememberAsyncImagePainter(
-        if (imageUri.value.isEmpty()){
-            R.drawable.baseline_person_24
-        }
-        else{
-            imageUri.value
-        }
-    )
-    val launcher= rememberLauncherForActivityResult(contract =ActivityResultContracts.GetContent()){uri: Uri?->
-        uri?.let { imageUri.value=it.toString() }
 
     }
 
+}
 
-    Column (
-        modifier= Modifier
+@Composable
+fun ProfileImage() {
+    val imageUri = rememberSaveable { mutableStateOf("") }
+    val painter = rememberAsyncImagePainter(
+        if (imageUri.value.isEmpty()) {
+            R.drawable.baseline_person_24
+        } else {
+            imageUri.value
+        }
+    )
+    val launcher =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
+            uri?.let { imageUri.value = it.toString() }
+
+        }
+
+
+    Column(
+        modifier = Modifier
             .padding(8.dp)
             .fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally){
-        Card(shape= CircleShape,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Card(
+            shape = CircleShape,
             modifier = Modifier
                 .padding(8.dp)
-                .size(100.dp)) {
-            Image(painter = painter, contentDescription = null,modifier= Modifier
-                .wrapContentSize()
-                .clickable { launcher.launch("image/") },
-                contentScale = ContentScale.Crop)
+                .size(100.dp)
+        ) {
+            Image(
+                painter = painter, contentDescription = null, modifier = Modifier
+                    .wrapContentSize()
+                    .clickable { launcher.launch("image/") },
+                contentScale = ContentScale.Crop
+            )
 
         }
         Text(text = "Change profile picture")
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun PreviewOfProfileScreen(){
-    ProfileScreen()
+fun PreviewOfProfileScreen() {
+    UserScreenTheme {
+        // A surface container using the 'background' color from the theme
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            ProfileScreen()
+        }
+    }
 }
+
 
 
 
